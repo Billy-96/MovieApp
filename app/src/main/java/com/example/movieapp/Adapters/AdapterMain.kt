@@ -8,65 +8,56 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movieapp.Interfaces.OnClickImp
 import com.example.movieapp.R
+import com.example.movieapp.Utils.Util
+import com.example.movieapp.databinding.MaketForPlayingBinding
 import com.example.movieapp.model.Movie
-import com.example.movieapp.ui.main.MainViewModel
-import kotlin.math.log
+import com.example.movieapp.model.MovieData
 
 class AdapterMain(
-    val context: Context?,
+    private val context: Context?,
     private val listOfMovies: List<Movie>,
-    val listener:OnClickImp
-) : RecyclerView.Adapter<AdapterMain.Holder>(){
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
-        val card = itemView.findViewById<CardView>(R.id.card_playing)
-        val image = itemView.findViewById<ImageView>(R.id.image_playing)
-        val title = itemView.findViewById<TextView>(R.id.title_playing)
-        val rating = itemView.findViewById<TextView>(R.id.rating_playing)
-        val date = itemView.findViewById<TextView>(R.id.date_playing)
-        val fav = itemView.findViewById<ImageView>(R.id.image_fav)
+    val listener: OnClickImp
+) : RecyclerView.Adapter<AdapterMain.Holder>() {
+    inner class Holder(val binding: MaketForPlayingBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        init{
-            card.setOnClickListener(this)
-            fav.setOnClickListener(this)
+        init {
+            binding.apply {
+                root.setOnClickListener {
+                    listener.onCardClick(adapterPosition, listOfMovies)
+                }
+            }
         }
 
         override fun onClick(v: View?) {
-            when(v?.id){
-                R.id.card_playing -> listener.onCardClick(adapterPosition)
-                R.id.image_fav -> {listener.onFavClick(adapterPosition)
-                notifyDataSetChanged()}
+            when (v?.id) {
+                R.id.parent -> listener.onCardClick(adapterPosition, listOfMovies)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.maket_for_playing, parent, false)
-        val holder = Holder(view)
-        return holder
+        val binding = MaketForPlayingBinding.inflate(LayoutInflater.from(parent.context))
+        return Holder(binding)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val movie = listOfMovies.get(position)
-        Log.i("MyTag",movie.fav.toString())
-        if (movie.fav){
-            holder.fav.setImageResource(R.drawable.ic_baseline_favorite_24)
-        }else{
-            holder.fav.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+        val movie = listOfMovies[position]
+        holder.binding.movieTitleItem.text = movie.title
+        holder.binding.movieRatingItem.text = movie.vote_average.toString()
+        holder.binding.movieReleaseItem.text = movie.release_date
+
+        context?.let {
+            Glide.with(it).load(Util.IMAGE_URL + movie.poster_path)
+                .into(holder.binding.moviePosterItem)
         }
-        context?.let { Glide.with(it).load(movie.poster).into(holder.image) }
-        holder.title.text = movie.title
-        holder.rating.text = movie.rating.toString()
-        holder.date.text = movie.comingDate.year.toString()
     }
 
     override fun getItemCount(): Int {
         return listOfMovies.size
     }
 }
-

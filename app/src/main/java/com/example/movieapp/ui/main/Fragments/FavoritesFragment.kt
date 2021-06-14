@@ -10,13 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.Adapters.AdapterMain
 import com.example.movieapp.Interfaces.OnClickImp
-import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentFavoritesBinding
-import com.example.movieapp.databinding.MainFragmentBinding
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.MovieData
 import com.example.movieapp.ui.main.MainViewModel
 
-class FavoritesFragment : Fragment(),OnClickImp {
+class FavoritesFragment : Fragment(), OnClickImp {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
@@ -33,39 +32,21 @@ class FavoritesFragment : Fragment(),OnClickImp {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getComingMovies()
         viewModel.getPlayingMovies()
 
         recyclerView = binding.recycleFavorites
 
-        viewModel.getlistPlaying().observe(viewLifecycleOwner, {
-            var list = mutableListOf<Movie>()
-            for(movie in it){
-                if (movie.fav){
-                    list.add(movie)
-                }
-            }
-            if (list.size != 0) {
-                binding.nofavText.visibility = View.GONE
-                getList(list)
-            }
-        })
-    }
-    fun getList(list: List<Movie>){
-        recyclerView.layoutManager = LinearLayoutManager(
-            view?.context,
-            LinearLayoutManager.VERTICAL, false
-        )
-        val adapter = AdapterMain(context, list, this)
-        recyclerView.adapter = adapter
     }
 
-    override fun onCardClick(position: Int) {
-        viewModel.cardClicked(position, parentFragmentManager)
+    fun getList(list: List<Movie>) {
     }
 
-    override fun onFavClick(position: Int) {
-        viewModel.favClicked(position)
+    override fun onCardClick(position: Int, list: List<Movie>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFavClick(position: Int, list: List<Movie>) {
+        TODO("Not yet implemented")
     }
 
 }

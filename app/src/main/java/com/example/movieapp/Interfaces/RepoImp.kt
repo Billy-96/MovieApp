@@ -1,9 +1,10 @@
 package com.example.movieapp.Interfaces
 
-import com.example.movieapp.model.Movie
+import com.example.movieapp.model.MovieData
+import retrofit2.Call
 
 interface RepoImp {
-    fun getComingMovies(): List<Movie>
-    fun getPlayingMovies(): List<Movie>
-    fun getAllMovies():List<Movie>
+    fun getPlayingMoviesFromDB(
+        api_key:String,language:String
+    ): Call<MovieData>
 }

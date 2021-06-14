@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.example.movieapp.R
+import com.bumptech.glide.Glide
 import com.example.movieapp.Utils.Util
 import com.example.movieapp.databinding.FragmentDescriptionBinding
-import com.example.movieapp.databinding.MainFragmentBinding
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.MovieData
 import com.example.movieapp.ui.main.MainViewModel
 
 class DescriptionFragment : Fragment() {
@@ -31,15 +31,14 @@ class DescriptionFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         val bundle = this.arguments
-        val note = bundle?.getSerializable(Util.key) as Movie
+        val movie = bundle?.getSerializable(Util.KEY) as Movie
 
-        binding.posterDesc.setImageResource(note.poster)
-        binding.titleDesc.text = note.title
-        binding.descDesc.text = note.desc
-        val year = note.comingDate.year.toString()
-        val month = note.comingDate.month.toString()
-        val day = note.comingDate.day.toString()
-        binding.dateDesc.text = "$day.$month.$year"
-        binding.rateDesc.text = note.rating.toString()
+        context?.let {
+            Glide.with(it).load(Util.IMAGE_URL + movie.poster_path).into(binding.posterDesc)
+        }
+        binding.titleDesc.text = movie.title
+        binding.descDesc.text = movie.overview
+        binding.rateDesc.text = movie.vote_average.toString()
+        binding.dateDesc.text = movie.release_date
     }
 }
