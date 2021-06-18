@@ -32,7 +32,6 @@ class FavoritesFragment : Fragment(), OnClickImp {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getPlayingMovies()
 
         recyclerView = binding.recycleFavorites
 

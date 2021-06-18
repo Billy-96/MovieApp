@@ -15,33 +15,39 @@ import retrofit2.Response
 
 class MainViewModel : ViewModel() {
     val liveDataPlaying = MutableLiveData<MovieData>()
-    val liveDataComing = MutableLiveData<MovieData>()
+    val liveDataRated = MutableLiveData<MovieData>()
     private val repository = Repo(NetworkUtils.getIntance())
 
-    fun getPlayingMovies() {
-        repository.getPlayingMoviesFromDB(Util.API_KEY,"ru")
+    suspend fun getPlayingMovies() {
+        repository.getPlayingMoviesFromDB(Util.API_KEY, "ru", "popularity.desc")
             .enqueue(object : Callback<MovieData> {
                 override fun onResponse(call: Call<MovieData>, response: Response<MovieData>) {
-                    if(response.isSuccessful){
-                        val movies= response.body()
+                    if (response.isSuccessful) {
+                        val movies = response.body()
                         liveDataPlaying.value = movies!!
-                        Log.i("MyTag",movies.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<MovieData>, t: Throwable) {
-                    Log.i("MyTag",t.message.toString())
+                    Log.i("MyTag", t.message.toString())
                 }
             })
     }
 
+    suspend fun getRatedMovies() {
+        repository.getRatedMoviesFromDB(Util.API_KEY, "ru", "vote_count.desc")
+            .enqueue(object : Callback<MovieData> {
+                override fun onResponse(call: Call<MovieData>, response: Response<MovieData>) {
+                    if (response.isSuccessful) {
+                        val movies = response.body()
+                        liveDataRated.value = movies!!
+                    }
+                }
 
-    fun getlistPlaying(): MutableLiveData<MovieData> {
-        return liveDataPlaying
-    }
-
-    fun getListComing(): MutableLiveData<MovieData> {
-        return liveDataComing
+                override fun onFailure(call: Call<MovieData>, t: Throwable) {
+                    Log.i("MyTag", t.message.toString())
+                }
+            })
     }
 
 
