@@ -41,11 +41,12 @@ class FavoritesFragment : Fragment(), OnClickImp {
     }
 
     override fun onCardClick(position: Int, list: List<Movie>) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onFavClick(position: Int, list: List<Movie>) {
-        TODO("Not yet implemented")
+
     }
+
 
 }

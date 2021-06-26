@@ -19,7 +19,7 @@ import com.example.movieapp.model.MovieData
 
 class AdapterMain(
     private val context: Context?,
-    private val listOfMovies: List<Movie>,
+    private var listOfMovies: List<Movie>,
     val listener: OnClickImp
 ) : RecyclerView.Adapter<AdapterMain.Holder>() {
     inner class Holder(val binding: MaketForPlayingBinding) :

@@ -6,5 +6,5 @@ import java.io.Serializable
 import java.util.*
 
 data class MovieData(
-    val results : List<Movie>
-):Serializable
+    var results : List<Movie>
+)
