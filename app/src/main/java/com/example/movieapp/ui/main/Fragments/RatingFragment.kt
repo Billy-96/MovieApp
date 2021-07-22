@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,32 +48,17 @@ class RatingFragment : Fragment(), OnClickImp {
         viewModel.liveDataRated.observe(viewLifecycleOwner, {
             showList(it.results)
         })
+
+        (activity as AppCompatActivity).supportActionBar?.title = "Rating Movies"
+
     }
 
-    fun showList(list: List<Movie>) {
+    private fun showList(list: List<Movie>) {
+
         binding.recycleRating.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0) {
-                    val visibleItemCount =
-                        (binding.recycleRating.layoutManager as GridLayoutManager).childCount
-                    val totalItemCount =
-                        (binding.recycleRating.layoutManager as GridLayoutManager).itemCount
-                    val firstVisibleItem =
-                        (binding.recycleRating.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-
-                    if (loading) {
-                        if (totalItemCount > previousTotal) {
-                            loading = false;
-                            previousTotal = totalItemCount;
-                        }
-                    }
-                    if ((visibleItemCount + firstVisibleItem) >= totalItemCount) {
-                        viewModel.getNewMovies("vote_count.desc",page,2)
-                        page++
-                        loading = true
-                    }
-                    super.onScrolled(recyclerView, dx, dy)
-                }
+                loadMovie(dx, dy)
+                super.onScrolled(recyclerView, dx, dy)
             }
         })
 
@@ -82,7 +68,7 @@ class RatingFragment : Fragment(), OnClickImp {
         )
 
         binding.recycleRating.adapter =
-            AdapterMain(context, list.sortedByDescending { it.vote_average }, this)
+            AdapterMain(context, (list).sortedByDescending { it.vote_average }, this)
 
     }
 
@@ -107,4 +93,26 @@ class RatingFragment : Fragment(), OnClickImp {
         }
     }
 
+    fun loadMovie(dx: Int, dy: Int) {
+        val visibleItemCount =
+            (binding.recycleRating.layoutManager as GridLayoutManager).childCount
+        val totalItemCount =
+            (binding.recycleRating.layoutManager as GridLayoutManager).itemCount
+        val firstVisibleItem =
+            (binding.recycleRating.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+        if (dy > 0) {
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount
+                }
+            }
+
+            if ((visibleItemCount + firstVisibleItem) >= totalItemCount) {
+                viewModel.getNewMovies("vote_count.desc", page, 2)
+                page++
+                loading = true
+            }
+        }
+    }
 }

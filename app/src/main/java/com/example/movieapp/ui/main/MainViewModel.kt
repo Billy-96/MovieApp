@@ -1,28 +1,22 @@
 package com.example.movieapp.ui.main
 
 import android.util.Log
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieapp.Network.NetworkUtils
 import com.example.movieapp.Utils.Util
-import com.example.movieapp.model.Movie
 import com.example.movieapp.model.MovieData
 import com.example.movieapp.model.Repo
-import com.example.movieapp.ui.main.Fragments.DescriptionFragment
-import com.google.android.material.theme.overlay.MaterialThemeOverlay
+import com.example.movieapp.model.Videos
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
 
 class MainViewModel : ViewModel() {
     val liveDataPlaying = MutableLiveData<MovieData>()
     val liveDataRated = MutableLiveData<MovieData>()
+    var liveDataForCurrentVideos = MutableLiveData<Videos>()
     private val repository = Repo()
 
     init {
@@ -88,7 +82,27 @@ class MainViewModel : ViewModel() {
             } catch (e: HttpException) {
                 Log.i("MYTAG", e.message().toString())
             } catch (t: Throwable) {
-                val i = Log.i("MYTAG", t.message.toString())
+                Log.i("MYTAG", t.message.toString())
+            }
+        }
+    }
+
+    fun getVideos(id: Int) {
+        Log.i("mytag", id.toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response =
+                    repository.getCurrentVideos(id, Util.API_KEY, "ru")
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        liveDataForCurrentVideos.value = response.body()!!
+                        Log.i("myTag", response.body().toString())
+                    }
+                }
+            } catch (e: HttpException) {
+                Log.i("MYTAG", e.message().toString())
+            } catch (t: Throwable) {
+                Log.i("MYTAG", t.message.toString())
             }
         }
     }

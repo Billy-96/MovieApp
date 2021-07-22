@@ -23,4 +23,12 @@ class Repo() : RepoImp {
     ): Response<MovieData> {
         return NetworkUtils.getIntance().getListFromNet(api_key, language, sort_by, page)
     }
+
+    override suspend fun getCurrentVideos(
+        id: Int,
+        api_key: String,
+        language: String
+    ): Response<Videos> {
+        return NetworkUtils.getIntance().getVideos(id, api_key, language)
+    }
 }

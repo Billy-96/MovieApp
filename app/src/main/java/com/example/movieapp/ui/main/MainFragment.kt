@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,7 @@ import com.example.movieapp.R
 import com.example.movieapp.Utils.Util
 import com.example.movieapp.databinding.MainFragmentBinding
 import com.example.movieapp.model.Movie
+import com.example.movieapp.room.FavoriteViewModel
 import com.example.movieapp.ui.main.Fragments.DescriptionFragment
 import kotlinx.coroutines.*
 
@@ -49,6 +52,9 @@ class MainFragment : Fragment(), OnClickImp {
         viewModel.liveDataPlaying.observe(viewLifecycleOwner, {
             showPlayingList(it.results)
         })
+
+        (activity as AppCompatActivity).supportActionBar?.title = "Home"
+
     }
 
     override fun onDestroyView() {
@@ -57,17 +63,17 @@ class MainFragment : Fragment(), OnClickImp {
     }
 
     private fun showRatedList(list: List<Movie>) {
-        loadMovies(binding.movieListRated,"vote_count.desc",2)
+        loadMovies(binding.movieListRated, "vote_count.desc", 2)
         binding.movieListRated.layoutManager = LinearLayoutManager(
             view?.context,
             LinearLayoutManager.HORIZONTAL, false
         )
         binding.movieListRated.adapter =
-            AdapterMain(context, list.sortedByDescending { it.vote_average }, this)
+            AdapterMain(context, (list).sortedByDescending { it.vote_average }, this)
     }
 
     private fun showPlayingList(list: List<Movie>) {
-        loadMovies(binding.movieListPopular,"popularity.desc",1)
+        loadMovies(binding.movieListPopular, "popularity.desc", 1)
         binding.movieListPopular.layoutManager = LinearLayoutManager(
             view?.context,
             LinearLayoutManager.HORIZONTAL, false
@@ -114,11 +120,11 @@ class MainFragment : Fragment(), OnClickImp {
                         }
                     }
                     if ((visibleItemCount + firstVisibleItem) >= totalItemCount) {
-                        if (data==2) {
-                            viewModel.getNewMovies("vote_count.desc", pageRated, data)
+                        if (data == 2) {
+                            viewModel.getNewMovies("vote_count.desc", pageRated,data)
                             pageRated++
-                        }else{
-                            viewModel.getNewMovies("vote_count.desc", pagePlaying, data)
+                        } else {
+                            viewModel.getNewMovies("vote_count.desc", pagePlaying,data)
                             pagePlaying++
                         }
                         loading = true

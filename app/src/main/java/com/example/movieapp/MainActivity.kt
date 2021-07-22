@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
 
         setFragment(MainFragment())
 
+
+
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.favorites -> setFragment(FavoritesFragment())
